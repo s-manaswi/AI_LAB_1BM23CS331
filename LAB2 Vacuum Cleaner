@@ -1,0 +1,65 @@
+#vacuum cleaner
+
+def is_done(grid):
+    for i in range(2):
+        for j in range(2):
+            if grid[i][j] == 0:
+                return False
+    return True
+
+def get_position(i, j):
+    if i == 0 and j == 0:
+        return 'A'
+    elif i == 0 and j == 1:
+        return 'B'
+    elif i == 1 and j == 0:
+        return 'C'
+    elif i == 1 and j == 1:
+        return 'D'
+
+def movement(pos):
+    if pos == 'A' or pos == 'D':
+        return "Where do you want to move next, B or C?"
+    if pos == 'B' or pos == 'C':
+        return "Where do you want to move next, A or D?"
+
+def position_to_indices(pos):
+    mapping = {
+        'A': (0,0),
+        'B': (0,1),
+        'C': (1,0),
+        'D': (1,1)
+    }
+    return mapping.get(pos.upper(), (-1,-1)) 
+  
+print("MANASWI SIRIPURAPU - 1BM23CS331\n")
+grid = [[0, 0], [0, 0]]
+i, j = 0, 0 
+
+while not is_done(grid):
+    current_pos = get_position(i, j)
+    print(f"Current room is: {current_pos}")
+
+    if grid[i][j] == 0:
+        grid[i][j] = 1
+        print(f"Cleaning room {current_pos}... Done.")
+    else:
+      print("This room is already clean...")
+
+    print(movement(current_pos))
+    inp = input().strip().upper()
+    print()
+
+    valid_moves = []
+    if current_pos in ['A', 'D']:
+        valid_moves = ['B', 'C']
+    elif current_pos in ['B', 'C']:
+        valid_moves = ['A', 'D']
+
+    if inp not in valid_moves:
+        print("Invalid move. Please choose a valid room.")
+        continue
+
+    i, j = position_to_indices(inp)
+
+print("All rooms are clean. Vacuuming complete!")
