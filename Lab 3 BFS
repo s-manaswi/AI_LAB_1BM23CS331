@@ -1,0 +1,52 @@
+from collections import deque
+
+def print_state(state):
+    for i in range(0, 9, 3):
+        print(state[i:i+3])
+    print()
+
+def bfs(start, goal):
+    queue = deque([(start, [])])
+    visited = set([start])
+    while queue:
+        state, path = queue.popleft()
+        if state == goal:
+            return path + [state]
+        zero = state.index(0)
+        moves = []
+        if zero % 3 > 0:
+            moves.append(zero - 1)
+        if zero % 3 < 2:
+            moves.append(zero + 1)
+        if zero // 3 > 0:
+            moves.append(zero - 3)
+        if zero // 3 < 2:
+            moves.append(zero + 3)
+        for move in moves:
+            new_state = list(state)
+            new_state[zero], new_state[move] = new_state[move], new_state[zero]
+            new_state = tuple(new_state)
+            if new_state not in visited:
+                visited.add(new_state)
+                queue.append((new_state, path + [state]))
+    return None
+
+def input_state(prompt):
+    s = input(prompt).strip().split()
+    return tuple(map(int, s))
+
+def print_state(state):
+    for i in range(0, 9, 3):
+        print(state[i:i+3])
+    print()
+
+print("SIRIPURAPU MANASWI - 1BM23CS331")
+start = input_state("Enter initial state (9 numbers with 0 for blank): ")
+goal = input_state("Enter goal state (9 numbers with 0 for blank): ")
+
+result = bfs(start, goal)
+if result:
+    for step in result:
+        print_state(step)
+else:
+    print("No solution found")
