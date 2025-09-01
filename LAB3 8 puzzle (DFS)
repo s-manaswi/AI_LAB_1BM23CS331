@@ -1,0 +1,42 @@
+def dfs_limited(state, goal, depth, path, visited):
+    if state == goal:
+        return path + [state]
+    if depth == 0:
+        return None
+    visited.add(state)
+    zero = state.index(0)
+    moves = []
+    if zero % 3 > 0:
+        moves.append(zero - 1)
+    if zero % 3 < 2:
+        moves.append(zero + 1)
+    if zero // 3 > 0:
+        moves.append(zero - 3)
+    if zero // 3 < 2:
+        moves.append(zero + 3)
+    for move in moves:
+        new_state = list(state)
+        new_state[zero], new_state[move] = new_state[move], new_state[zero]
+        new_state = tuple(new_state)
+        if new_state not in visited:
+            result = dfs_limited(new_state, goal, depth-1, path + [state], visited)
+            if result:
+                return result
+    visited.remove(state)
+    return None
+
+def input_state(prompt):
+    s = input(prompt).strip().split()
+    return tuple(map(int, s))
+
+print("SIRIPURAPU MANASWI - 1BM23CS331")
+start = input_state("Enter initial state (9 numbers with 0 for blank): ")
+goal = input_state("Enter goal state (9 numbers with 0 for blank): ")
+
+max_depth = 10
+result = dfs_limited(start, goal, max_depth, [], set())
+if result:
+    for step in result:
+        print_state(step)
+else:
+    print("No solution found within depth limit")
