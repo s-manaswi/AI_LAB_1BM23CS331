@@ -1,0 +1,20 @@
+Initial facts:
+  ('American', 'Hostile', 'Nono')
+  ('American', 'Robert')
+  ('Enemy', 'Nono', 'America')
+  ('Missile', 'missile1')
+  ('Owns', 'Nono', 'missile1')
+  ('Weapon', 'Missile')
+
+Inferred: ('Sell', 'Hostile', 'missile1')
+Inferred: ('Weapon', 'missile1')
+
+Final facts:
+  ('American', 'Hostile', 'Nono')
+  ('American', 'Robert')
+  ('Enemy', 'Nono', 'America')
+  ('Missile', 'missile1')
+  ('Owns', 'Nono', 'missile1')
+  ('Sell', 'Hostile', 'missile1')
+  ('Weapon', 'Missile')
+  ('Weapon', 'missile1')
