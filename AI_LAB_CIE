@@ -1,0 +1,81 @@
+import itertools
+
+facts = {
+    ("American", "Hostile", "Nono"),
+    ("Owns", "Nono", "missile1"),
+    ("Missile", "missile1"),
+    ("Enemy", "Nono", "America"),
+    ("American","Robert"),
+    ("Weapon","Missile")
+}
+
+rules = [
+    ( [("American", "x"), ("Weapon", "y"), ("Enemy", "z", "America"), ("Sell", "x", "y", "z")],
+      ("Criminal", "x") ),
+
+    ( [("Missile", "x"), ("Owns", "Nono", "x")],
+      ("Sell", "Hostile", "x") ),
+
+    ( [("Missile", "x")],
+      ("Weapon", "x") ),
+]
+
+def is_var(t):
+    return isinstance(t, str) and t.islower()
+
+def unify_template_with_fact(template, fact, theta):
+    if template[0] != fact[0] or len(template) != len(fact):
+        return None
+    theta = dict(theta)
+    for t_arg, f_arg in zip(template[1:], fact[1:]):
+        if is_var(t_arg):
+            if t_arg in theta:
+                if theta[t_arg] != f_arg:
+                    return None
+            else:
+                theta[t_arg] = f_arg
+        else:
+            if t_arg != f_arg:
+                return None
+    return theta
+
+def apply_substitution(atom, theta):
+    return tuple(theta.get(a, a) for a in atom)
+
+def forward_chain(facts, rules, verbose=True):
+    known = set(facts)
+    newly = True
+    if verbose:
+        print("Initial facts:")
+        for f in sorted(known):
+            print(" ", f)
+        print()
+    while newly:
+        newly = False
+        for ants, cons in rules:
+            matches = [ {} ]
+            for ant in ants:
+                new_matches = []
+                for theta in matches:
+                    for fact in known:
+                        theta2 = unify_template_with_fact(ant, fact, theta)
+                        if theta2 is not None:
+                            new_matches.append(theta2)
+                matches = new_matches
+                if not matches:
+                    break
+            for theta in matches:
+                new_fact = apply_substitution(cons, theta)
+                if new_fact not in known:
+                    known.add(new_fact)
+                    newly = True
+                    if verbose:
+                        print("Inferred:", new_fact)
+    if verbose:
+        print("\nFinal facts:")
+        for f in sorted(known):
+            print(" ", f)
+    return known
+
+if __name__ == "__main__":
+    forward_chain(facts, rules)
